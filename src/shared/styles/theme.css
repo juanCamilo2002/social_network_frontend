@@ -1,0 +1,44 @@
+@theme inline {
+  --color-background: var(--app-background);
+  --color-surface: var(--app-surface);
+  --color-foreground: var(--app-foreground);
+  --color-muted: var(--app-muted);
+  --color-border: var(--app-border);
+  --color-primary: var(--app-primary);
+  --color-primary-foreground: var(--app-primary-foreground);
+  --color-hover: var(--app-hover);
+  --color-danger: var(--app-danger);
+  --color-accent: var(--app-accent);
+  --color-accent-soft: var(--app-accent-soft);
+  --color-accent-foreground: var(--app-accent-foreground);
+}
+
+:root {
+  --app-background: #ffffff;
+  --app-surface: #f8fafc;
+  --app-foreground: #0f172a;
+  --app-muted: #475569;
+  --app-border: #cbd5e1;
+  --app-primary: #0f172a;
+  --app-primary-foreground: #ffffff;
+  --app-hover: #f1f5f9;
+  --app-danger: #b91c1c;
+  --app-accent: #35695e;
+  --app-accent-soft: #eaf3ef;
+  --app-accent-foreground: #244d44;
+}
+
+.dark {
+  --app-background: #020617;
+  --app-surface: #0f172a;
+  --app-foreground: #f1f5f9;
+  --app-muted: #94a3b8;
+  --app-border: #475569;
+  --app-primary: #f1f5f9;
+  --app-primary-foreground: #0f172a;
+  --app-hover: #1e293b;
+  --app-danger: #f87171;
+  --app-accent: #a2d5c4;
+  --app-accent-soft: #18352e;
+  --app-accent-foreground: #bce4d5;
+}
