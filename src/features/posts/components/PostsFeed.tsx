@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useAuthenticatedApi } from '../../auth/api/use-authenticated-api';
 import type { Post } from '../types/post.types';
 import { PostCard } from './PostCard';
+import { CreatePostForm } from './CreatePostForm';
 
 type FeedState =
   | { status: 'loading' }
@@ -48,11 +49,33 @@ export function PostsFeed() {
     setAttempt((current) => current + 1);
   }
 
+  function handlePostCreated(post: Post) {
+    setState((current) => {
+      if (current.status !== 'success') {
+        return current;
+      }
+
+      return {
+        status: 'success',
+        posts: [
+          post,
+          ...current.posts.filter(
+            (existingPost) => existingPost.id !== post.id,
+          ),
+        ],
+      };
+    });
+  }
+
   return (
     <section aria-labelledby="feed-title" className="py-10">
       <h2 id="feed-title" className="text-xl font-semibold tracking-tight">
         Publicaciones
       </h2>
+
+      {state.status === 'success' && (
+        <CreatePostForm onCreated={handlePostCreated} />
+      )}
 
       {state.status === 'loading' && (
         <p role="status" className="mt-6 text-sm text-muted">

@@ -106,4 +106,34 @@ describe('PostsFeed', () => {
 
     expect(config.signal.aborted).toBe(true);
   });
+
+  it('agrega al feed una publicación creada sin volver a consultar la lista', async () => {
+    requestMock.mockResolvedValueOnce([]).mockResolvedValueOnce(post);
+
+    const user = userEvent.setup();
+
+    render(<PostsFeed />);
+
+    const content = await screen.findByLabelText('¿Qué quieres compartir?');
+
+    await user.type(content, '  Mi primera publicación  ');
+    await user.click(screen.getByRole('button', { name: 'Publicar' }));
+
+    expect(
+      await screen.findByText('Mi primera publicación'),
+    ).toBeInTheDocument();
+
+    expect(requestMock).toHaveBeenLastCalledWith(
+      expect.objectContaining({
+        method: 'POST',
+        url: '/posts',
+        data: {
+          content: 'Mi primera publicación',
+        },
+      }),
+    );
+
+    expect(requestMock).toHaveBeenCalledTimes(2);
+    expect(content).toHaveValue('');
+  });
 });
