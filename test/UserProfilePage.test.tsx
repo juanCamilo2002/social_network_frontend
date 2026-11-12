@@ -104,6 +104,10 @@ describe('UserProfilePage', () => {
     expect(
       screen.queryByRole('button', { name: 'Reintentar' }),
     ).not.toBeInTheDocument();
+
+    expect(
+      screen.queryByRole('button', { name: 'Editar perfil' }),
+    ).not.toBeInTheDocument();
   });
 
   it('muestra un error y permite reintentar', async () => {

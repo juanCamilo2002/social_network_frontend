@@ -5,6 +5,7 @@ import { Link } from 'react-router';
 import { useAuthenticatedApi } from '../../auth/api/use-authenticated-api';
 import { useAuth } from '../../auth/context/auth-context';
 import { ProfileDetails } from '../components/ProfileDetails';
+import { EditProfileDialog } from '../components/EditProfileDialog';
 import type { UserProfile } from '../types/user-profile.types';
 
 type ProfileState =
@@ -23,6 +24,9 @@ function OwnProfileContent() {
   const { request } = useAuthenticatedApi();
   const [state, setState] = useState<ProfileState>({ status: 'loading' });
   const [attempt, setAttempt] = useState(0);
+
+  const [isEditing, setIsEditing] = useState(false);
+  const [saved, setSaved] = useState(false);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -99,7 +103,35 @@ function OwnProfileContent() {
         </div>
       )}
 
-      {state.status === 'success' && <ProfileDetails profile={state.profile} />}
+      {state.status === 'success' && (
+        <>
+          <ProfileDetails
+            profile={state.profile}
+            onEdit={() => {
+              setSaved(false);
+              setIsEditing(true);
+            }}
+          />
+
+          {saved && (
+            <p role="status" className="mt-4 text-sm text-accent-foreground">
+              Perfil actualizado.
+            </p>
+          )}
+
+          {isEditing && (
+            <EditProfileDialog
+              profile={state.profile}
+              onClose={() => setIsEditing(false)}
+              onSaved={(profile) => {
+                setState({ status: 'success', profile });
+                setIsEditing(false);
+                setSaved(true);
+              }}
+            />
+          )}
+        </>
+      )}
     </main>
   );
 }
