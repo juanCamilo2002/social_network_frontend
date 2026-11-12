@@ -1,6 +1,13 @@
+import { Pencil } from 'lucide-react';
+
 import type { UserProfile } from '../types/user-profile.types';
 
-export function ProfileDetails({ profile }: { profile: UserProfile }) {
+interface ProfileDetailsProps {
+  profile: UserProfile;
+  onEdit?: () => void;
+}
+
+export function ProfileDetails({ profile, onEdit }: ProfileDetailsProps) {
   const initial = profile.name.trim().charAt(0).toUpperCase() || '?';
 
   return (
@@ -36,6 +43,20 @@ export function ProfileDetails({ profile }: { profile: UserProfile }) {
             />
           )}
         </div>
+
+        {onEdit && (
+          <div className="mt-3 flex justify-end">
+            <button
+              type="button"
+              onClick={onEdit}
+              aria-label="Editar perfil"
+              title="Editar perfil"
+              className="inline-flex size-10 items-center justify-center rounded-lg border border-border hover:bg-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+            >
+              <Pencil aria-hidden="true" className="size-4" />
+            </button>
+          </div>
+        )}
 
         <h1 className="mt-4 wrap-break-word text-2xl font-semibold tracking-tight">
           {profile.name} {profile.lastName}
