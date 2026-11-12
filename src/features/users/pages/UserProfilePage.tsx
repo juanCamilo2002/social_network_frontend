@@ -1,0 +1,175 @@
+import { isAxiosError } from 'axios';
+import { useEffect, useState } from 'react';
+import { Link, useParams } from 'react-router';
+
+import { useAuthenticatedApi } from '../../auth/api/use-authenticated-api';
+import { useAuth } from '../../auth/context/auth-context';
+import type { UserProfile } from '../types/user-profile.types';
+
+type ProfileState =
+  | { status: 'loading' }
+  | { status: 'success'; profile: UserProfile }
+  | { status: 'not-found' }
+  | { status: 'error' };
+
+export function UserProfilePage() {
+  const { nickname } = useParams<{ nickname: string }>();
+  const { accessToken } = useAuth();
+
+  if (!nickname) {
+    return (
+      <main className="mx-auto w-full max-w-3xl px-6 py-12 sm:px-10 sm:py-16">
+        <p role="alert">No se especificó un usuario.</p>
+      </main>
+    );
+  }
+
+  return (
+    <UserProfileContent
+      key={JSON.stringify([nickname, accessToken])}
+      nickname={nickname}
+    />
+  );
+}
+
+function UserProfileContent({ nickname }: { nickname: string }) {
+  const { request } = useAuthenticatedApi();
+  const [state, setState] = useState<ProfileState>({ status: 'loading' });
+  const [attempt, setAttempt] = useState(0);
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    request<UserProfile>({
+      method: 'GET',
+      url: `/users/by-nickname/${encodeURIComponent(nickname)}`,
+      signal: controller.signal,
+    })
+      .then((profile) => {
+        if (!controller.signal.aborted) {
+          setState({ status: 'success', profile });
+        }
+      })
+      .catch((error: unknown) => {
+        if (controller.signal.aborted) {
+          return;
+        }
+
+        if (isAxiosError(error) && error.response?.status === 404) {
+          setState({ status: 'not-found' });
+          return;
+        }
+
+        setState({ status: 'error' });
+      });
+
+    return () => {
+      controller.abort();
+    };
+  }, [nickname, request, attempt]);
+
+  function retry() {
+    setState({ status: 'loading' });
+    setAttempt((current) => current + 1);
+  }
+
+  return (
+    <main className="mx-auto w-full max-w-3xl px-6 py-12 sm:px-10 sm:py-16">
+      <Link
+        to="/search"
+        className="inline-flex min-h-10 items-center rounded-lg text-sm font-medium text-muted hover:text-foreground"
+      >
+        ← Volver a buscar personas
+      </Link>
+
+      {state.status === 'loading' && (
+        <p role="status" className="mt-8 text-sm text-muted">
+          Cargando perfil…
+        </p>
+      )}
+
+      {state.status === 'not-found' && (
+        <div className="mt-8">
+          <h1 className="text-2xl font-semibold tracking-tight">
+            Perfil no encontrado
+          </h1>
+          <p className="mt-3 text-sm text-muted">
+            No encontramos un usuario con ese nickname.
+          </p>
+        </div>
+      )}
+
+      {state.status === 'error' && (
+        <div role="alert" className="mt-8">
+          <p className="text-sm text-danger">
+            No fue posible cargar el perfil.
+          </p>
+          <button
+            type="button"
+            onClick={retry}
+            className="mt-4 min-h-10 rounded-lg border border-border px-4 text-sm font-medium hover:bg-hover"
+          >
+            Reintentar
+          </button>
+        </div>
+      )}
+
+      {state.status === 'success' && <ProfileDetails profile={state.profile} />}
+    </main>
+  );
+}
+
+function ProfileDetails({ profile }: { profile: UserProfile }) {
+  const initial = profile.name.trim().charAt(0).toUpperCase() || '?';
+
+  return (
+    <article className="mt-6 overflow-hidden rounded-xl border border-border">
+      <div className="relative h-32 bg-accent-soft sm:h-40">
+        {profile.banner && (
+          <img
+            src={profile.banner}
+            alt=""
+            className="absolute inset-0 size-full object-cover"
+            onError={(event) => {
+              event.currentTarget.style.display = 'none';
+            }}
+          />
+        )}
+      </div>
+
+      <div className="px-5 pb-6 sm:px-7 sm:pb-8">
+        <div
+          aria-hidden="true"
+          className="relative -mt-10 flex size-20 items-center justify-center overflow-hidden rounded-full border-4 border-background bg-accent-soft text-2xl font-semibold text-accent-foreground"
+        >
+          {initial}
+
+          {profile.profilePicture && (
+            <img
+              src={profile.profilePicture}
+              alt=""
+              className="absolute inset-0 size-full object-cover"
+              onError={(event) => {
+                event.currentTarget.style.display = 'none';
+              }}
+            />
+          )}
+        </div>
+
+        <h1 className="mt-4 wrap-break-word text-2xl font-semibold tracking-tight">
+          {profile.name} {profile.lastName}
+        </h1>
+
+        <p className="mt-1 wrap-break-word text-sm text-muted">
+          @{profile.nickname}
+        </p>
+
+        {profile.biography && (
+          <p className="mt-6 wrap-break-word whitespace-pre-wrap text-sm leading-6">
+            {profile.biography}
+          </p>
+        )}
+      </div>
+    </article>
+  );
+}

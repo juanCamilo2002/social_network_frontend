@@ -9,6 +9,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { UsersSearchPage } from '../src/features/users/pages/UsersSearchPage';
 import type { UserSearchResult } from '../src/features/users/types/user-search.types';
+import { MemoryRouter } from 'react-router';
 
 const { requestMock } = vi.hoisted(() => ({
   requestMock: vi.fn(),
@@ -58,7 +59,11 @@ describe('UsersSearchPage', () => {
   });
 
   it('no consulta con menos de dos caracteres después de quitar espacios', async () => {
-    render(<UsersSearchPage />);
+    render(
+      <MemoryRouter>
+        <UsersSearchPage />
+      </MemoryRouter>,
+    );
 
     changeQuery(' a ');
     await advanceTime(500);
@@ -70,7 +75,11 @@ describe('UsersSearchPage', () => {
   it('espera 350 ms desde el último cambio y envía la búsqueda normalizada', async () => {
     requestMock.mockResolvedValue([]);
 
-    render(<UsersSearchPage />);
+    render(
+      <MemoryRouter>
+        <UsersSearchPage />
+      </MemoryRouter>,
+    );
 
     changeQuery('ju');
     await advanceTime(300);
@@ -99,7 +108,11 @@ describe('UsersSearchPage', () => {
   it('muestra los resultados recibidos', async () => {
     requestMock.mockResolvedValue([user]);
 
-    render(<UsersSearchPage />);
+    render(
+      <MemoryRouter>
+        <UsersSearchPage />
+      </MemoryRouter>,
+    );
 
     changeQuery('juan');
     await advanceTime(350);
@@ -109,12 +122,20 @@ describe('UsersSearchPage', () => {
     ).toBeInTheDocument();
     expect(screen.getByText('Juan Pérez')).toBeInTheDocument();
     expect(screen.getByText('@juan_dev')).toBeInTheDocument();
+
+    expect(
+      screen.getByRole('link', { name: /juan pérez.*@juan_dev/i }),
+    ).toHaveAttribute('href', '/profile/juan_dev');
   });
 
   it('muestra un mensaje cuando no hay resultados', async () => {
     requestMock.mockResolvedValue([]);
 
-    render(<UsersSearchPage />);
+    render(
+      <MemoryRouter>
+        <UsersSearchPage />
+      </MemoryRouter>,
+    );
 
     changeQuery('nadie');
     await advanceTime(350);
@@ -129,7 +150,11 @@ describe('UsersSearchPage', () => {
       .mockRejectedValueOnce(new Error('Error de red'))
       .mockResolvedValueOnce([user]);
 
-    render(<UsersSearchPage />);
+    render(
+      <MemoryRouter>
+        <UsersSearchPage />
+      </MemoryRouter>,
+    );
 
     changeQuery('juan');
     await advanceTime(350);
@@ -167,7 +192,11 @@ describe('UsersSearchPage', () => {
       .mockReturnValueOnce(firstResponse)
       .mockResolvedValueOnce([secondUser]);
 
-    render(<UsersSearchPage />);
+    render(
+      <MemoryRouter>
+        <UsersSearchPage />
+      </MemoryRouter>,
+    );
 
     changeQuery('juan');
     await advanceTime(350);
@@ -199,7 +228,11 @@ describe('UsersSearchPage', () => {
   it('cancela la petición al desmontar la página', async () => {
     requestMock.mockReturnValue(new Promise(() => {}));
 
-    const { unmount } = render(<UsersSearchPage />);
+    const { unmount } = render(
+      <MemoryRouter>
+        <UsersSearchPage />
+      </MemoryRouter>,
+    );
 
     changeQuery('juan');
     await advanceTime(350);

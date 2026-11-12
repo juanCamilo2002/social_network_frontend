@@ -7,6 +7,7 @@ import { HomePage } from './pages/HomePage';
 import { ThemeToggle } from './shared/components/ThemeToggle';
 import { RegisterPage } from './features/auth/pages/RegisterPage';
 import { UsersSearchPage } from './features/users/pages/UsersSearchPage';
+import { UserProfilePage } from './features/users/pages/UserProfilePage';
 
 function App() {
   return (
@@ -42,6 +43,7 @@ function App() {
         <Route element={<ProtectedRoute />}>
           <Route path="/" element={<HomePage />} />
           <Route path="/search" element={<UsersSearchPage />} />
+          <Route path="/profile/:nickname" element={<UserProfilePage />} />
         </Route>
 
         <Route
