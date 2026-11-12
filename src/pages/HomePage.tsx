@@ -1,3 +1,4 @@
+import { Link } from 'react-router';
 import { useAuth } from '../features/auth/context/auth-context';
 import { PostsFeed } from '../features/posts/components/PostsFeed';
 
@@ -15,13 +16,22 @@ export function HomePage() {
           </p>
         </div>
 
-        <button
-          type="button"
-          onClick={signOut}
-          className="min-h-10 rounded-lg border border-border px-4 text-sm font-medium hover:bg-hover"
-        >
-          Cerrar sesión
-        </button>
+        <div className="flex gap-3">
+          <button
+            type="button"
+            onClick={signOut}
+            className="min-h-10 rounded-lg border border-border px-4 text-sm font-medium hover:bg-hover"
+          >
+            Cerrar sesión
+          </button>
+
+          <Link
+            to="search"
+            className="inline-flex min-h-10 items-center rounded-lg border border-border px-4 text-sm font-medium hover:bg-hover"
+          >
+            Buscar personas
+          </Link>
+        </div>
       </div>
 
       <PostsFeed key={accessToken} />

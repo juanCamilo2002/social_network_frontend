@@ -6,6 +6,7 @@ import { LoginPage } from './features/auth/pages/LoginPage';
 import { HomePage } from './pages/HomePage';
 import { ThemeToggle } from './shared/components/ThemeToggle';
 import { RegisterPage } from './features/auth/pages/RegisterPage';
+import { UsersSearchPage } from './features/users/pages/UsersSearchPage';
 
 function App() {
   return (
@@ -40,6 +41,7 @@ function App() {
 
         <Route element={<ProtectedRoute />}>
           <Route path="/" element={<HomePage />} />
+          <Route path="/search" element={<UsersSearchPage />} />
         </Route>
 
         <Route
