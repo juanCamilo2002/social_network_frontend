@@ -8,6 +8,7 @@ import { ThemeToggle } from './shared/components/ThemeToggle';
 import { RegisterPage } from './features/auth/pages/RegisterPage';
 import { UsersSearchPage } from './features/users/pages/UsersSearchPage';
 import { UserProfilePage } from './features/users/pages/UserProfilePage';
+import { OwnProfilePage } from './features/users/pages/OwnProfilePage';
 
 function App() {
   return (
@@ -44,6 +45,7 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/search" element={<UsersSearchPage />} />
           <Route path="/profile/:nickname" element={<UserProfilePage />} />
+          <Route path="/me" element={<OwnProfilePage />} />
         </Route>
 
         <Route

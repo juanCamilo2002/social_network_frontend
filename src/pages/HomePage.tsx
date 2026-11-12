@@ -16,7 +16,7 @@ export function HomePage() {
           </p>
         </div>
 
-        <div className="flex gap-3">
+        <div className="flex flex-wrap gap-3">
           <button
             type="button"
             onClick={signOut}
@@ -30,6 +30,13 @@ export function HomePage() {
             className="inline-flex min-h-10 items-center rounded-lg border border-border px-4 text-sm font-medium hover:bg-hover"
           >
             Buscar personas
+          </Link>
+
+          <Link
+            to="/me"
+            className="inline-flex min-h-10 items-center rounded-lg border border-border px-4 text-sm font-medium hover:bg-hover"
+          >
+            Mi perfil
           </Link>
         </div>
       </div>
