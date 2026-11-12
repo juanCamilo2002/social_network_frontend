@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useAuthenticatedApi } from '../../auth/api/use-authenticated-api';
 import { useAuth } from '../../auth/context/auth-context';
 import type { UserSearchResult } from '../types/user-search.types';
+import { Link } from 'react-router';
 
 type SearchState =
   | { status: 'idle' }
@@ -166,37 +167,39 @@ function UsersSearch() {
               const initial = user.name.trim().charAt(0).toUpperCase() || '?';
 
               return (
-                <li
-                  key={user.id}
-                  className="flex items-center gap-4 border-b border-border py-4"
-                >
-                  <div
-                    aria-hidden="true"
-                    className="relative flex size-11 shrink-0 items-center justify-center overflow-hidden rounded-full bg-accent-soft font-semibold text-accent-foreground"
+                <li key={user.id} className="border-b border-border">
+                  <Link
+                    to={`/profile/${encodeURIComponent(user.nickname)}`}
+                    className="flex items-center gap-4 rounded-lg px-4 py-4 hover:bg-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
                   >
-                    {initial}
+                    <div
+                      aria-hidden="true"
+                      className="relative flex size-11 shrink-0 items-center justify-center overflow-hidden rounded-full bg-accent-soft font-semibold text-accent-foreground"
+                    >
+                      {initial}
 
-                    {user.profilePicture && (
-                      <img
-                        src={user.profilePicture}
-                        alt=""
-                        className="absolute inset-0 size-full object-cover"
-                        onError={(event) => {
-                          event.currentTarget.style.display = 'none';
-                        }}
-                      />
-                    )}
-                  </div>
+                      {user.profilePicture && (
+                        <img
+                          src={user.profilePicture}
+                          alt=""
+                          className="absolute inset-0 size-full object-cover"
+                          onError={(event) => {
+                            event.currentTarget.style.display = 'none';
+                          }}
+                        />
+                      )}
+                    </div>
 
-                  <div className="min-w-0">
-                    <p className="wrap-break-word font-medium">
-                      {user.name} {user.lastName}
-                    </p>
+                    <div className="min-w-0">
+                      <p className="wrap-break-word font-medium">
+                        {user.name} {user.lastName}
+                      </p>
 
-                    <p className="wrap-break-word text-sm text-muted">
-                      @{user.nickname}
-                    </p>
-                  </div>
+                      <p className="wrap-break-word text-sm text-muted">
+                        @{user.nickname}
+                      </p>
+                    </div>
+                  </Link>
                 </li>
               );
             })}
