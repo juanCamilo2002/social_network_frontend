@@ -1,15 +1,19 @@
 import { Pencil } from 'lucide-react';
 
 import type { UserProfile } from '../types/user-profile.types';
+import { ProfilePicture } from './ProfilePicture';
 
 interface ProfileDetailsProps {
   profile: UserProfile;
   onEdit?: () => void;
+  onChangePicture?: () => void;
 }
 
-export function ProfileDetails({ profile, onEdit }: ProfileDetailsProps) {
-  const initial = profile.name.trim().charAt(0).toUpperCase() || '?';
-
+export function ProfileDetails({
+  profile,
+  onEdit,
+  onChangePicture,
+}: ProfileDetailsProps) {
   return (
     <article className="mt-6 overflow-hidden rounded-xl border border-border">
       <div className="relative h-32 bg-accent-soft sm:h-40">
@@ -26,23 +30,11 @@ export function ProfileDetails({ profile, onEdit }: ProfileDetailsProps) {
       </div>
 
       <div className="px-5 pb-6 sm:px-7 sm:pb-8">
-        <div
-          aria-hidden="true"
-          className="relative -mt-10 flex size-20 items-center justify-center overflow-hidden rounded-full border-4 border-background bg-accent-soft text-2xl font-semibold text-accent-foreground"
-        >
-          {initial}
-
-          {profile.profilePicture && (
-            <img
-              src={profile.profilePicture}
-              alt=""
-              className="absolute inset-0 size-full object-cover"
-              onError={(event) => {
-                event.currentTarget.style.display = 'none';
-              }}
-            />
-          )}
-        </div>
+        <ProfilePicture
+          name={profile.name}
+          pictureUrl={profile.profilePicture}
+          onChangePicture={onChangePicture}
+        />
 
         {onEdit && (
           <div className="mt-3 flex justify-end">

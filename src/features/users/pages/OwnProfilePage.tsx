@@ -6,6 +6,7 @@ import { useAuthenticatedApi } from '../../auth/api/use-authenticated-api';
 import { useAuth } from '../../auth/context/auth-context';
 import { ProfileDetails } from '../components/ProfileDetails';
 import { EditProfileDialog } from '../components/EditProfileDialog';
+import { ChangeProfilePictureDialog } from '../components/ChangeProfilePictureDialog';
 import type { UserProfile } from '../types/user-profile.types';
 
 type ProfileState =
@@ -27,6 +28,9 @@ function OwnProfileContent() {
 
   const [isEditing, setIsEditing] = useState(false);
   const [saved, setSaved] = useState(false);
+
+  const [isChangingPicture, setIsChangingPicture] = useState(false);
+  const [pictureSaved, setPictureSaved] = useState(false);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -111,11 +115,21 @@ function OwnProfileContent() {
               setSaved(false);
               setIsEditing(true);
             }}
+            onChangePicture={() => {
+              setPictureSaved(false);
+              setIsChangingPicture(true);
+            }}
           />
 
           {saved && (
             <p role="status" className="mt-4 text-sm text-accent-foreground">
               Perfil actualizado.
+            </p>
+          )}
+
+          {pictureSaved && (
+            <p role="status" className="mt-4 text-sm text-accent-foreground">
+              Foto de perfil actualizada.
             </p>
           )}
 
@@ -127,6 +141,17 @@ function OwnProfileContent() {
                 setState({ status: 'success', profile });
                 setIsEditing(false);
                 setSaved(true);
+              }}
+            />
+          )}
+
+          {isChangingPicture && (
+            <ChangeProfilePictureDialog
+              onClose={() => setIsChangingPicture(false)}
+              onSaved={(profile) => {
+                setState({ status: 'success', profile });
+                setIsChangingPicture(false);
+                setPictureSaved(true);
               }}
             />
           )}
