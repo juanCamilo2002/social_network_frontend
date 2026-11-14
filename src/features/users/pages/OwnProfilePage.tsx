@@ -7,6 +7,7 @@ import { useAuth } from '../../auth/context/auth-context';
 import { ProfileDetails } from '../components/ProfileDetails';
 import { EditProfileDialog } from '../components/EditProfileDialog';
 import { ChangeProfilePictureDialog } from '../components/ChangeProfilePictureDialog';
+import { ChangeProfileBannerDialog } from '../components/ChangeProfileBannerDialog';
 import type { UserProfile } from '../types/user-profile.types';
 
 type ProfileState =
@@ -31,6 +32,9 @@ function OwnProfileContent() {
 
   const [isChangingPicture, setIsChangingPicture] = useState(false);
   const [pictureSaved, setPictureSaved] = useState(false);
+
+  const [isChangingBanner, setIsChangingBanner] = useState(false);
+  const [bannerSaved, setBannerSaved] = useState(false);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -119,6 +123,11 @@ function OwnProfileContent() {
               setPictureSaved(false);
               setIsChangingPicture(true);
             }}
+
+            onChangeBanner={() => {
+              setBannerSaved(false);
+              setIsChangingBanner(true);
+            }}
           />
 
           {saved && (
@@ -130,6 +139,12 @@ function OwnProfileContent() {
           {pictureSaved && (
             <p role="status" className="mt-4 text-sm text-accent-foreground">
               Foto de perfil actualizada.
+            </p>
+          )}
+
+          {bannerSaved && (
+            <p role="status" className="mt-4 text-sm text-accent-foreground">
+              Banner actualizado.
             </p>
           )}
 
@@ -152,6 +167,17 @@ function OwnProfileContent() {
                 setState({ status: 'success', profile });
                 setIsChangingPicture(false);
                 setPictureSaved(true);
+              }}
+            />
+          )}
+
+          {isChangingBanner && (
+            <ChangeProfileBannerDialog
+              onClose={() => setIsChangingBanner(false)}
+              onSaved={(profile) => {
+                setState({ status: 'success', profile });
+                setIsChangingBanner(false);
+                setBannerSaved(true);
               }}
             />
           )}
