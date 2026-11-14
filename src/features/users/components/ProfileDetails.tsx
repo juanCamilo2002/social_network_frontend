@@ -2,32 +2,28 @@ import { Pencil } from 'lucide-react';
 
 import type { UserProfile } from '../types/user-profile.types';
 import { ProfilePicture } from './ProfilePicture';
+import { ProfileBanner } from './ProfileBanner';
 
 interface ProfileDetailsProps {
   profile: UserProfile;
   onEdit?: () => void;
   onChangePicture?: () => void;
+  onChangeBanner?: () => void;
 }
 
 export function ProfileDetails({
   profile,
   onEdit,
   onChangePicture,
+  onChangeBanner,
 }: ProfileDetailsProps) {
   return (
     <article className="mt-6 overflow-hidden rounded-xl border border-border">
-      <div className="relative h-32 bg-accent-soft sm:h-40">
-        {profile.banner && (
-          <img
-            src={profile.banner}
-            alt=""
-            className="absolute inset-0 size-full object-cover"
-            onError={(event) => {
-              event.currentTarget.style.display = 'none';
-            }}
-          />
-        )}
-      </div>
+      <ProfileBanner
+        name={profile.name}
+        bannerUrl={profile.banner}
+        onChangeBanner={onChangeBanner}
+      />
 
       <div className="px-5 pb-6 sm:px-7 sm:pb-8">
         <ProfilePicture
