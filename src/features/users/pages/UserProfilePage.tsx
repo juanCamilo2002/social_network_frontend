@@ -6,6 +6,7 @@ import { useAuthenticatedApi } from '../../auth/api/use-authenticated-api';
 import { useAuth } from '../../auth/context/auth-context';
 import type { UserProfile } from '../types/user-profile.types';
 import { ProfileDetails } from '../components/ProfileDetails';
+import { ProfilePosts } from '../../posts/components/ProfilePosts';
 
 type ProfileState =
   | { status: 'loading' }
@@ -115,7 +116,12 @@ function UserProfileContent({ nickname }: { nickname: string }) {
         </div>
       )}
 
-      {state.status === 'success' && <ProfileDetails profile={state.profile} />}
+      {state.status === 'success' && (
+        <>
+          <ProfileDetails profile={state.profile} />
+          <ProfilePosts key={state.profile.id} authorId={state.profile.id} />
+        </>
+      )}
     </main>
   );
 }

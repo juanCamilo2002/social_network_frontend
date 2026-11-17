@@ -8,6 +8,7 @@ import { ProfileDetails } from '../components/ProfileDetails';
 import { EditProfileDialog } from '../components/EditProfileDialog';
 import { ChangeProfilePictureDialog } from '../components/ChangeProfilePictureDialog';
 import { ChangeProfileBannerDialog } from '../components/ChangeProfileBannerDialog';
+import { ProfilePosts } from '../../posts/components/ProfilePosts';
 import type { UserProfile } from '../types/user-profile.types';
 
 type ProfileState =
@@ -129,6 +130,8 @@ function OwnProfileContent() {
               setIsChangingBanner(true);
             }}
           />
+
+          <ProfilePosts key={state.profile.id} authorId={state.profile.id} />
 
           {saved && (
             <p role="status" className="mt-4 text-sm text-accent-foreground">

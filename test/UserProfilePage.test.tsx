@@ -9,9 +9,12 @@ const { requestMock } = vi.hoisted(() => ({
   requestMock: vi.fn(),
 }));
 
+const requestWithPosts = (config: { url?: string }) =>
+  config.url === '/posts' ? Promise.resolve([]) : requestMock(config);
+
 vi.mock('../src/features/auth/api/use-authenticated-api', () => ({
   useAuthenticatedApi: () => ({
-    request: requestMock,
+    request: requestWithPosts,
   }),
 }));
 
